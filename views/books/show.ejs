@@ -1,0 +1,21 @@
+<h2 class="page-header"><%= bookWithAuthor.book.title %></h2>
+<div class="book-details">
+  <div>
+    <img class="book-cover" src="<%= bookWithAuthor.book.coverImagePath %>">
+    <div class="book-details-btn-grid">
+      <a class="btn btn-primary" href="<%= booksBaseUrl %>/books/<%= bookWithAuthor.book.id %>/edit">Edit</a>
+      <%- include('../partials/deleteForm', { url: `/books/${bookWithAuthor.book.id}` }) %>
+      <a class="btn btn-primary book-details-author-button" href="<%= authorBaseUrl %>/authors/<%= bookWithAuthor.authorDetails._id %>">View Author</a>
+    </div>
+  </div>
+  <div class="book-details-grid">
+    <div class="book-details-label">Author:</div>
+    <div><%= bookWithAuthor.authorDetails.name %></div>
+    <div class="book-details-label">Publish Date:</div>
+    <div><%= bookWithAuthor.book.publishDate.toDateString() %></div>
+    <div class="book-details-label">Page Count:</div>
+    <div><%= bookWithAuthor.book.pageCount %></div>
+    <div class="book-details-label">Description:</div>
+    <div><%= bookWithAuthor.book.description %></div>
+  </div>
+</div>
