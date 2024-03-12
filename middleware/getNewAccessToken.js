@@ -1,7 +1,6 @@
 const axios = require('axios')
 
 const getNewAccessToken = async (req, res, next) => {
-console.log('i am inside the 2nd middleware. here refreshtoken ===', req.refreshToken)
   // Generate a new access token using the refresh token
   const newAccessToken = await axios.get('http://localhost:3002/auth/newAccessToken', {
     headers: {

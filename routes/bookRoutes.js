@@ -23,7 +23,6 @@ router.get('/new', async (req, res) => {
 
 //
 router.get('/recentlyAdded', async (req, res) => {
-  // console.log('inside recently added, user = ', req.user)
   try {
     const books = await Book.find().sort({ createdAt: 'desc' }).limit(10).exec()
     res.render('index', { books: books, booksBaseUrl: `${process.env.BOOKS_BASEURL}` })
@@ -53,7 +52,6 @@ router.get('/:id', async (req, res) => {
       authorBaseUrl: `${process.env.AUTHOR_BASEURL}` 
     })
   } catch (error) {
-    console.log('error fetching a book ---', error.message)
     res.redirect('/books')
   }
 })
@@ -199,7 +197,6 @@ async function renderFormPage(accessToken,res, book, form, hasError = false) {
     }
     res.render(`books/${form}`, params)
   } catch (error) {
-    console.log('error when rending the the books page', error.message)
     res.redirect('/books')
   }
 }
