@@ -8,6 +8,12 @@ const PORT = process.env.BOOK_PORT || 3000
 require('./dbConfig/config')
 const getNewAccessToken = require('./middleware/getNewAccessToken')
 
+const cors = require('cors')
+
+app.use(cors({
+    origin: 'https://hookedonbooks-auth.onrender.com',
+}))
+
 app.use(cookieParser())
 app.use(expressLayouts)
 app.set('view engine', 'ejs')
@@ -29,7 +35,7 @@ app.use((req, res, next) => {
     else if (req.errorMessage === 'TokenExpired') {
         // Apply getNewAccessToken middleware only when req.errorMessage is present
         getNewAccessToken(req, res, next);
-    } 
+    }
     else {
         // Skip getNewAccessToken middleware
         next();
