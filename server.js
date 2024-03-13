@@ -12,15 +12,16 @@ const cors = require('cors')
 
 app.use(cors({
     origin: 'https://hookedonbooks-auth.onrender.com',
+    credentials: true, 
 }))
 
 app.use(cookieParser())
 app.use(expressLayouts)
 app.set('view engine', 'ejs')
-app.set('views', process.cwd() + '/views')
+app.set('views', 'views')
 app.set('layout', 'layouts/layout')
 app.use(methodOverride('_method'))
-app.use(express.static(process.cwd() + '/public'))
+app.use(express.static('public'))
 app.use(express.urlencoded({ limit: '10mb', extended: false }))
 
 const bookRouter = require('./routes/bookRoutes')
