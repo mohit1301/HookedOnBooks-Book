@@ -17,7 +17,7 @@ router.get('/getByAuthorId', async (req, res) => {
 
 // New Book Route
 router.get('/new', async (req, res) => {
-  const accessToken = req.cookies.accessToken
+  const accessToken = req.accessToken
   renderNewPage(accessToken, res, new Book())
 })
 
@@ -25,16 +25,20 @@ router.get('/new', async (req, res) => {
 router.get('/recentlyAdded', async (req, res) => {
   try {
     const books = await Book.find().sort({ createdAt: 'desc' }).limit(10).exec()
-    res.render('index', { books: books, booksBaseUrl: `${process.env.BOOKS_BASEURL}` })
+    res.render('index', {
+      books: books
+    })
   } catch (error) {
-    res.render('books/index', { errorMessage: 'An error occurred', booksBaseUrl: `${process.env.BOOKS_BASEURL}` })
+    res.render('books/index', {
+      errorMessage: 'An error occurred'
+    })
   }
 })
 
 // Show Book Route
 router.get('/:id', async (req, res) => {
   try {
-    const accessToken = req.cookies.accessToken
+    const accessToken = req.accessToken
     const book = await Book.findById(req.params.id)
     const authorResponse = await axios.get(`${process.env.AUTHOR_BASEURL}/authors/getById?id=${book.author}`,
       {
@@ -46,10 +50,8 @@ router.get('/:id', async (req, res) => {
       book: book,
       authorDetails: authorResponse.data
     };
-    res.render('books/show', { 
-      bookWithAuthor: bookWithAuthor, 
-      booksBaseUrl: `${process.env.BOOKS_BASEURL}`,
-      authorBaseUrl: `${process.env.AUTHOR_BASEURL}` 
+    res.render('books/show', {
+      bookWithAuthor: bookWithAuthor
     })
   } catch (error) {
     res.redirect('/books')
@@ -58,7 +60,7 @@ router.get('/:id', async (req, res) => {
 
 // Edit Book Route
 router.get('/:id/edit', async (req, res) => {
-  const accessToken = req.cookies.accessToken
+  const accessToken = req.accessToken
   try {
     const book = await Book.findById(req.params.id)
     renderEditPage(accessToken, res, book)
@@ -83,8 +85,7 @@ router.get('/', async (req, res) => {
     const books = await query.exec()
     res.render('books/index', {
       books: books,
-      searchOptions: req.query,
-      booksBaseUrl: `${process.env.BOOKS_BASEURL}`
+      searchOptions: req.query
     })
   } catch {
     res.redirect('/books')
@@ -93,7 +94,7 @@ router.get('/', async (req, res) => {
 
 // Create Book Route
 router.post('/', async (req, res) => {
-  const accessToken = req.cookies.accessToken
+  const accessToken = req.accessToken
   const book = new Book({
     title: req.body.title,
     author: req.body.author,
@@ -114,7 +115,7 @@ router.post('/', async (req, res) => {
 // Update Book Route
 router.put('/:id', async (req, res) => {
   let book
-  const accessToken = req.cookies.accessToken
+  const accessToken = req.accessToken
 
   try {
     book = await Book.findById(req.params.id)
@@ -141,7 +142,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   let book
   let bookWithAuthor
-  const accessToken = req.cookies.accessToken
+  const accessToken = req.accessToken
   try {
     book = await Book.findByIdAndDelete(req.params.id)
     const authorResponse = await axios.get(`${process.env.AUTHOR_BASEURL}/authors/getById?id=${book.author}`, {
@@ -158,8 +159,7 @@ router.delete('/:id', async (req, res) => {
     if (book == null) {
       res.render('books/show', {
         bookWithAuthor: bookWithAuthor,
-        errorMessage: 'Could not remove book',
-        booksBaseUrl: `${process.env.BOOKS_BASEURL}`
+        errorMessage: 'Could not remove book'
       })
     } else {
       res.redirect('/books')
@@ -176,7 +176,7 @@ async function renderEditPage(accessToken, res, book, hasError = false) {
   renderFormPage(accessToken, res, book, 'edit', hasError)
 }
 
-async function renderFormPage(accessToken,res, book, form, hasError = false) {
+async function renderFormPage(accessToken, res, book, form, hasError = false) {
   try {
     const authors = await axios.get(`${process.env.AUTHOR_BASEURL}/authors/getAllAuthors`, {
       headers: {
@@ -185,8 +185,7 @@ async function renderFormPage(accessToken,res, book, form, hasError = false) {
     });
     const params = {
       authors: authors.data,
-      book: book,
-      booksBaseUrl: `${process.env.BOOKS_BASEURL}`
+      book: book
     }
     if (hasError) {
       if (form === 'edit') {

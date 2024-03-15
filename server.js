@@ -12,7 +12,8 @@ const cors = require('cors')
 
 app.use(cors({
     origin: 'https://hookedonbooks-auth.onrender.com',
-    credentials: true, 
+    origin: `${process.env.AUTH_URL}`,
+    credentials: true
 }))
 
 app.use(cookieParser())
