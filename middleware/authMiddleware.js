@@ -2,7 +2,7 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken')
 
 // Function to extract token from cookies
-const extractTokens = function (req) {
+const extractTokens = function (req, res) {
     let accessToken = null;
     let refreshToken = null;
 
@@ -10,7 +10,6 @@ const extractTokens = function (req) {
     if (req.query.accessToken && req.query.refreshToken) {
         accessToken = Buffer.from(decodeURIComponent(req.query.accessToken), 'base64').toString();
         refreshToken = Buffer.from(decodeURIComponent(req.query.refreshToken), 'base64').toString();
-        return { accessToken, refreshToken };
     }
 
     // Check if the tokens are present in the authorization header
@@ -18,7 +17,6 @@ const extractTokens = function (req) {
         const parts = req.headers.authorization.split(' ');
         if (parts.length === 2 && parts[0] === 'Bearer') {
             accessToken = parts[1];
-            return { accessToken };
         }
     }
 
@@ -28,12 +26,18 @@ const extractTokens = function (req) {
         refreshToken = req.cookies.refreshToken;
     }
 
+    if(res.locals.accessToken){
+
+        accessToken = res.locals.accessToken
+        refreshToken = res.locals.refreshToken
+    }
+
     return { accessToken, refreshToken };
 };
 
 // Function to decode user from token and attach it back to the request
 const authenticate = function (req, res, next) {
-    const {accessToken, refreshToken} = extractTokens(req);
+    const { accessToken, refreshToken } = extractTokens(req, res);
     if (accessToken) {
         jwt.verify(accessToken, process.env.JWT_SECRET_KEY, (err, decoded) => {
             if (err) {
@@ -55,20 +59,22 @@ const authenticate = function (req, res, next) {
                 req.user = decoded;
                 req.accessToken = accessToken
                 req.refreshToken = refreshToken
-                res.cookie('accessToken', accessToken, { httpOnly: true, secure: true})
-                res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true})            
-                
+                res.cookie('accessToken', accessToken)
+                res.cookie('refreshToken', refreshToken)
+
                 res.locals.authorBaseUrl = process.env.AUTHOR_BASEURL
                 res.locals.booksBaseUrl = process.env.BOOKS_BASEURL
                 res.locals.authBaseUrl = process.env.AUTH_BASEURL
+                res.locals.accessToken = accessToken
+                res.locals.refreshToken = refreshToken
                 res.locals.isAuthenticated = true;
                 next();
             }
         });
     } else {
         // Token not found
-        return res.status(401).json({ message: 'Unauthorized: Token not found' });
+        res.status(401).json({ message: 'Unauthorized: Token not found' });
     }
 };
 
-module.exports = authenticate;
+module.exports = authenticate

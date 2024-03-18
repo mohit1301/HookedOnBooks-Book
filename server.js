@@ -8,14 +8,6 @@ const PORT = process.env.BOOK_PORT || 3000
 require('./dbConfig/config')
 const getNewAccessToken = require('./middleware/getNewAccessToken')
 
-const cors = require('cors')
-
-app.use(cors({
-    origin: 'https://hookedonbooks-auth.onrender.com',
-    origin: `${process.env.AUTH_URL}`,
-    credentials: true
-}))
-
 app.use(cookieParser())
 app.use(expressLayouts)
 app.set('view engine', 'ejs')
