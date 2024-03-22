@@ -13,7 +13,7 @@ const extractTokens = function (req, res) {
     }
 
     // Check if the tokens are present in the authorization header
-    if (req.headers.authorization) {
+    else if (req.headers.authorization) {
         const parts = req.headers.authorization.split(' ');
         if (parts.length === 2 && parts[0] === 'Bearer') {
             accessToken = parts[1];
@@ -21,12 +21,12 @@ const extractTokens = function (req, res) {
     }
 
     // If tokens are not found in the authorization header, check the cookies
-    if (req.cookies && req.cookies.accessToken) {
+    else if (req.cookies && req.cookies.accessToken) {
         accessToken = req.cookies.accessToken;
         refreshToken = req.cookies.refreshToken;
     }
 
-    if(res.locals.accessToken){
+    else if (res.locals.accessToken){
 
         accessToken = res.locals.accessToken
         refreshToken = res.locals.refreshToken
