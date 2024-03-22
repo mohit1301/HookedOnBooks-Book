@@ -3,7 +3,7 @@
     <a class="header-title" href="<%= locals.booksBaseUrl %>/books/recentlyAdded">HookedOnBooks</a>
     <ul>
       <li><a href="<%= locals.authorBaseUrl %>/authors<%= locals.accessToken ? '?accessToken=' + locals.accessToken + '&refreshToken=' + locals.refreshToken : '' %>">Authors</a></li>
-      <li><a href="<%= locals.authorBaseUrl %>/authors/new<%= locals.accessToken ? '?accessToken=' + locals.accessToken + '&refreshToken=' + locals.refreshToken : '' %>"">Add Author</a></li>
+      <li><a href="<%= locals.authorBaseUrl %>/authors/new<%= locals.accessToken ? '?accessToken=' + locals.accessToken + '&refreshToken=' + locals.refreshToken : '' %>">Add Author</a></li>
       <li><a href="<%= locals.booksBaseUrl %>/books">Books</a></li>
       <li><a href="<%= locals.booksBaseUrl %>/books/new">Add Book</a></li>
       <% if (locals.isAuthenticated) { %>
