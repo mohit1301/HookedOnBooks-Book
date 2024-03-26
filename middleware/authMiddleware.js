@@ -76,11 +76,11 @@ const authenticate = function (req, res, next) {
                 res.cookie('accessToken', accessToken)
                 res.cookie('refreshToken', refreshToken)
 
-                res.locals.authorBaseUrl = encodeToken(process.env.AUTHOR_BASEURL)
-                res.locals.booksBaseUrl = encodeToken(process.env.BOOKS_BASEURL)
+                res.locals.authorBaseUrl = process.env.AUTHOR_BASEURL
+                res.locals.booksBaseUrl = process.env.BOOKS_BASEURL
                 res.locals.authBaseUrl = process.env.AUTH_BASEURL
-                res.locals.accessToken = accessToken
-                res.locals.refreshToken = refreshToken
+                res.locals.accessToken = encodeToken(accessToken)
+                res.locals.refreshToken = encodeToken(refreshToken)
                 res.locals.isAuthenticated = true;
                 next();
             }
