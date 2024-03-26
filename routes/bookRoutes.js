@@ -18,7 +18,8 @@ router.get('/getByAuthorId', async (req, res) => {
 // New Book Route
 router.get('/new', async (req, res) => {
   const accessToken = req.accessToken
-  renderNewPage(accessToken, res, new Book())
+  const refreshToken = req.refreshToken
+  renderNewPage(accessToken, refreshToken, res, new Book())
 })
 
 //
@@ -39,11 +40,13 @@ router.get('/recentlyAdded', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const accessToken = req.accessToken
+    const refreshToken = req.refreshToken
     const book = await Book.findById(req.params.id)
     const authorResponse = await axios.get(`${process.env.AUTHOR_BASEURL}/authors/getById?id=${book.author}`,
       {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
+          'Refresh-Token': `${refreshToken}`
         }
       })
     const bookWithAuthor = {
@@ -61,9 +64,10 @@ router.get('/:id', async (req, res) => {
 // Edit Book Route
 router.get('/:id/edit', async (req, res) => {
   const accessToken = req.accessToken
+  const refreshToken = req.refreshToken
   try {
     const book = await Book.findById(req.params.id)
-    renderEditPage(accessToken, res, book)
+    renderEditPage(accessToken, refreshToken, res, book)
   } catch {
     res.redirect('/')
   }
@@ -96,6 +100,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const accessToken = req.accessToken
   const refreshToken = req.refreshToken
+
   const book = new Book({
     title: req.body.title,
     author: req.body.author,
@@ -109,7 +114,6 @@ router.post('/', async (req, res) => {
     const newBook = await book.save()
     res.redirect(`books/${newBook.id}`)
   } catch (error) {
-    console.log('Inside error of books. access token when calling the authors from book =', accessToken)
     renderNewPage(accessToken, refreshToken, res, book, true)
   }
 })
@@ -118,6 +122,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   let book
   const accessToken = req.accessToken
+  const refreshToken = req.refreshToken
 
   try {
     book = await Book.findById(req.params.id)
@@ -133,7 +138,7 @@ router.put('/:id', async (req, res) => {
     res.redirect(`/books/${book.id}`)
   } catch {
     if (book != null) {
-      renderEditPage(accessToken, res, book, true)
+      renderEditPage(accessToken, refreshToken, res, book, true)
     } else {
       redirect('/books')
     }
@@ -145,11 +150,13 @@ router.delete('/:id', async (req, res) => {
   let book
   let bookWithAuthor
   const accessToken = req.accessToken
+  const refreshToken = req.refreshToken
   try {
     book = await Book.findByIdAndDelete(req.params.id)
     const authorResponse = await axios.get(`${process.env.AUTHOR_BASEURL}/authors/getById?id=${book.author}`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
+        'Refresh-Token': `${refreshToken}`
       }
     })
     bookWithAuthor = {
@@ -174,8 +181,8 @@ async function renderNewPage(accessToken, refreshToken, res, book, hasError = fa
   renderFormPage(accessToken, refreshToken, res, book, 'new', hasError)
 }
 
-async function renderEditPage(accessToken, res, book, hasError = false) {
-  renderFormPage(accessToken, res, book, 'edit', hasError)
+async function renderEditPage(accessToken, refreshToken, res, book, hasError = false) {
+  renderFormPage(accessToken, refreshToken, res, book, 'edit', hasError)
 }
 
 async function renderFormPage(accessToken, refreshToken, res, book, form, hasError = false) {
