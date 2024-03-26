@@ -108,6 +108,7 @@ router.post('/', async (req, res) => {
     const newBook = await book.save()
     res.redirect(`books/${newBook.id}`)
   } catch (error) {
+    console.log('Inside error of books. access token when calling the authors from book =', accessToken)
     renderNewPage(accessToken, res, book, true)
   }
 })

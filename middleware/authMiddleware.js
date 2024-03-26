@@ -29,6 +29,7 @@ const extractTokens = function (req, res) {
         const parts = req.headers.authorization.split(' ');
         if (parts.length === 2 && parts[0] === 'Bearer') {
             accessToken = parts[1];
+            refreshToken = req.cookies.refreshToken
         }
     }
 
