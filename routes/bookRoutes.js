@@ -183,7 +183,7 @@ async function renderFormPage(accessToken, refreshToken, res, book, form, hasErr
     const authors = await axios.get(`${process.env.AUTHOR_BASEURL}/authors/getAllAuthors`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
-        'Refresh-Token': refreshToken
+        'Refresh-Token': `${refreshToken}`
       }
     });
     const params = {
