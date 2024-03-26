@@ -196,6 +196,7 @@ async function renderFormPage(accessToken, res, book, form, hasError = false) {
     }
     res.render(`books/${form}`, params)
   } catch (error) {
+    console.log('error in books ===', error)
     res.redirect('/books')
   }
 }
