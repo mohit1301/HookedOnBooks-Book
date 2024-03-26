@@ -29,7 +29,7 @@ const extractTokens = function (req, res) {
         const parts = req.headers.authorization.split(' ');
         if (parts.length === 2 && parts[0] === 'Bearer') {
             accessToken = parts[1];
-            refreshToken = req.cookies.refreshToken || res.locals.refreshToken
+            refreshToken = req.headers['Refresh-Token']
             console.log('access token inside extract token from authorization header', accessToken)
             console.log('refresh token inside extract token from authorization header', refreshToken)
         }

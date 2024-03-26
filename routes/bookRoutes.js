@@ -95,6 +95,7 @@ router.get('/', async (req, res) => {
 // Create Book Route
 router.post('/', async (req, res) => {
   const accessToken = req.accessToken
+  const refreshToken = req.refreshToken
   const book = new Book({
     title: req.body.title,
     author: req.body.author,
@@ -109,7 +110,7 @@ router.post('/', async (req, res) => {
     res.redirect(`books/${newBook.id}`)
   } catch (error) {
     console.log('Inside error of books. access token when calling the authors from book =', accessToken)
-    renderNewPage(accessToken, res, book, true)
+    renderNewPage(accessToken, refreshToken, res, book, true)
   }
 })
 
@@ -169,19 +170,20 @@ router.delete('/:id', async (req, res) => {
 })
 
 
-async function renderNewPage(accessToken, res, book, hasError = false) {
-  renderFormPage(accessToken, res, book, 'new', hasError)
+async function renderNewPage(accessToken, refreshToken, res, book, hasError = false) {
+  renderFormPage(accessToken, refreshToken, res, book, 'new', hasError)
 }
 
 async function renderEditPage(accessToken, res, book, hasError = false) {
   renderFormPage(accessToken, res, book, 'edit', hasError)
 }
 
-async function renderFormPage(accessToken, res, book, form, hasError = false) {
+async function renderFormPage(accessToken, refreshToken, res, book, form, hasError = false) {
   try {
     const authors = await axios.get(`${process.env.AUTHOR_BASEURL}/authors/getAllAuthors`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
+        'Refresh-Token': refreshToken
       }
     });
     const params = {
