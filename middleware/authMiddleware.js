@@ -42,6 +42,8 @@ const authenticate = function (req, res, next) {
         jwt.verify(accessToken, process.env.JWT_SECRET_KEY, (err, decoded) => {
             if (err) {
                 if (err.name === 'JsonWebTokenError') {
+                    console.log('access token inisde 1st middleware: ', accessToken)
+                    console.log('refresh token inisde 1st middleware: ', refreshToken)
                     res.redirect(`${process.env.AUTH_BASEURL}/auth/login`)
                 }
                 else if (err.name === 'TokenExpiredError') {
