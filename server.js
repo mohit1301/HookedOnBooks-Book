@@ -23,12 +23,7 @@ const authenticate = require('./middleware/authMiddleware')
 app.use(authenticate)
 
 app.use((req, res, next) => {
-    // if (req.errorMessage === 'JsonWebTokenError') {
-    //     console.log('access token inisde 2nd middleware: ', req.accessToken)
-    //     console.log('refresh token inisde 2nd middleware: ', req.refreshToken)
-    //     res.redirect(`${process.env.AUTH_BASEURL}/auth/login`)
-    // }
-    // else 
+
     if (req.errorMessage === 'TokenExpired') {
         // Apply getNewAccessToken middleware only when req.errorMessage is present
         getNewAccessToken(req, res, next);
